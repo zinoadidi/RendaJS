@@ -3,7 +3,7 @@
  		'appTitle':'Render Test',
 		'displayContainer':'display',
 		'currentPage':'',
-		'viewBaseUrl':'',
+		'viewPath':'app/view/',
 		'externalUrl':'',
 		'internalUrl':'',
 		'appMode':'debug'

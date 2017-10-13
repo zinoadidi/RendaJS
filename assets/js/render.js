@@ -5,26 +5,26 @@
 			appTitle: '',
 			displayContainer:'',
 			currentPage: '',
-			viewBaseUrl:'',
+			viewPath:'',
 			externalUrl:'',
 			internalUrl:'',
 			appMode:'debug'
 		};
 
 	    this.page = function(pageName) {
-	    	var url = config.viewBaseUrl+pageName;
+	    	var url = this.config.viewPath+pageName;
 	    	$.get(url,{},function(data,status){
 	    		if(data) {
-		            $('#'+config.displayContainer).html(data);
+		            $('#'+render.config.displayContainer).html(data);
 		            updateUrl(pageName);
 		            stopLoader();
 		        }else{
-		            log("Page Load Failed");
+		            console.log('failed');
 		        }
 		    });
 	    };
 
-	    this.updateUrl = function(pageName,pageComponent) {
+	    function updateUrl(pageName,pageComponent) {
 	        config.currentPage = pageName;
             var stateObj = { pageName: pageName };
             var title = title+" | "+pageName;
@@ -38,44 +38,56 @@
 	    		if(this.config.appMode == 'debug'){
 	    			document.write('JQuery Library Needed!. Please Inclue JQuery library to use Render.js<br/>');
 	    		}else{
-	    			log('Render.JS - Warning: JQuery not Detected, Please make sure you have added JQuery library to your page before including Render.js');
+	    			this.log('Render.JS - Warning: JQuery not Detected, Please make sure you have added JQuery library to your page before including Render.js');
 	    		}
 	    	}else{
+	    		this.log('App Started');
 	    		$( window ).on( "navigate", function( event, data ) {
-				  console.log( data.state );
+				  render.log( data.state );
+				});
+				$(window).on('hashchange ', function() {
+				  trackPageChanges();
 				});
 	    	}
 	    	
 	    };
 	    this.getData = function() {
-	        Log('active');
+	        this.log('active');
 	    };
 
 	    this.postData = function() {
-	        Log('active');    
+	        this.log('active');    
 	    };
 
 	    this.putData = function() {
-	        Log('active');
+	        this.log('active');
 	    };
 	    
 	    this.showLoader = function() {
-	        Log('active');
+	        this.log('active');
 	    };
 	    this.stopLoader = function() {
-	        Log('active');
+	        this.log('active');
 	    };
 	    this.log = function(msg){
 	    	console.log(msg);
 	    };
 	    
-	}
 
-$(window).on('hashchange', function() {
-  alert();
-});
-	var render = new Render(null);
-	render.start();
+
+	    /*-----*/
+	    function trackPageChanges(urlPage){
+	    	if (this.config.currentPage == pageName){
+
+	    	}else{
+	    		loadPage(urlPage);
+	    	}
+	    }
+	}
+	
+var render = new Render(null);
+
+render.start();
 
 
 
