@@ -1,4 +1,4 @@
- 
+  
 	function Render(param){
 
 		this.config = {
@@ -8,46 +8,55 @@
 			viewPath:'',
 			externalUrl:'',
 			internalUrl:'',
-			appMode:'debug'
+			appMode:'debug',
+			loader:{
+				img: '',
+				text:'',
+				showImg:'',
+				showTxt:'',
+				imgSize:'',
+				fontSize:''	
+			}
 		};
 
 	    this.page = function(pageName) {
+	    	render.loader('start');
 	    	var url = this.config.viewPath+pageName;
 	    	$.get(url,{},function(data,status){
 	    		if(data) {
 		            $('#'+render.config.displayContainer).html(data);
 		            updateUrl(pageName);
-		            stopLoader();
+		            render.loader('stop');
 		        }else{
-		            console.log('failed');
+		        	render.page('404');
 		        }
+		    }).fail(function() {
+		        render.page('404');
 		    });
 	    };
 
 	    function updateUrl(pageName,pageComponent) {
-	        config.currentPage = pageName;
+	        render.config.currentPage = pageName;
             var stateObj = { pageName: pageName };
-            var title = title+" | "+pageName;
+            var title = render.config.appTitle+" | "+pageName;
             document.title = title;
 			history.pushState(stateObj, title, "#/"+pageName);
-            log(pageName+" loaded");
+            render.log(pageName+" loaded");
 	    };
 
 	    this.start = function(){
 	    	if(typeof jQuery == 'undefined'){
 	    		if(this.config.appMode == 'debug'){
-	    			document.write('JQuery Library Needed!. Please Inclue JQuery library to use Render.js<br/>');
-	    		}else{
 	    			this.log('Render.JS - Warning: JQuery not Detected, Please make sure you have added JQuery library to your page before including Render.js');
+	    		}else{
 	    		}
+	    		document.write('...one or more required app components missing. Please contact webmaster for more information<br/>');
 	    	}else{
-	    		this.log('App Started');
-	    		$( window ).on( "navigate", function( event, data ) {
-				  render.log( data.state );
+	    		$( document ).ready(function() {
+	    			render.log('App Started');
+	    			render.trackPageChange(true);
 				});
-				$(window).on('hashchange ', function() {
-				  trackPageChanges();
-				});
+	    		
 	    	}
 	    	
 	    };
@@ -63,25 +72,45 @@
 	        this.log('active');
 	    };
 	    
-	    this.showLoader = function() {
+	    this.loader = function(val) {
 	        this.log('active');
 	    };
-	    this.stopLoader = function() {
-	        this.log('active');
-	    };
+	    
 	    this.log = function(msg){
 	    	console.log(msg);
 	    };
-	    
+	   this.trackPageChange = function(val){
+	   		if (val) {
+	   			var cPage = '';
+	   			cPage = window.location.href;
+	   			cPage = cPage.split('#');
+	   			
+   				if (cPage[0]){
+   					if(cPage[1]){
+		   				cPage = cPage[1].split("/");
+			   			if(cPage.lenght > 1 ){ 	
+			   				if (cPage[2] == '' || cPage[2] == null) {
+			   					console.log('single page');
+			   				}else{
+			   				console.log('components Detected');
+			   				}
+			   			}else{
+			   				if (cPage[1] == '' || cPage[1] == null || cPage[1] == '/') {
+			   					console.log('page not Detected');
+			   				}else{
+			   					console.log('single page');
+			   				}
+			   			}
+			   			console.dir(cPage);
+			   		}else{
+			   			console.log(cPage);
+		   			}
+   				}else{
+   					console.log('not page');
+   				}
+	   		}else{
 
-
-	    /*-----*/
-	    function trackPageChanges(urlPage){
-	    	if (this.config.currentPage == pageName){
-
-	    	}else{
-	    		loadPage(urlPage);
-	    	}
+	   		}	
 	    }
 	}
 	
@@ -102,3 +131,10 @@ render.start();
 
 
 	*/
+
+	/*$( window ).on( "navigate", function( event, data ) {
+	  render.log('navigate');
+	});
+	$(window).on('hashchange ', function() {
+	  trackPageChange();
+	});*/
