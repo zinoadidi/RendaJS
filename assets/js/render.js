@@ -1,10 +1,10 @@
-  
+ 
 	function Render(param){
-
 		this.config = {
 			appTitle: '',
 			displayContainer:'',
 			currentPage: '',
+			currentComponent: '',
 			viewPath:'',
 			externalUrl:'',
 			internalUrl:'',
@@ -18,32 +18,64 @@
 				fontSize:''	
 			}
 		};
-
-	    this.page = function(pageName) {
+	    this.page = function(page) {
 	    	render.loader('start');
-	    	var url = this.config.viewPath+pageName;
+	    	var url = this.config.viewPath+page;
 	    	$.get(url,{},function(data,status){
 	    		if(data) {
 		            $('#'+render.config.displayContainer).html(data);
-		            updateUrl(pageName);
+		            updateUrl(page,null);
 		            render.loader('stop');
+		            return 0;
 		        }else{
 		        	render.page('404');
+		   			console.log('page not found');
+		   			return 1;
 		        }
 		    }).fail(function() {
 		        render.page('404');
+		   		console.log('an error occured while loading page');
+		   		return 1;
 		    });
 	    };
-
-	    function updateUrl(pageName,pageComponent) {
-	        render.config.currentPage = pageName;
-            var stateObj = { pageName: pageName };
-            var title = render.config.appTitle+" | "+pageName;
-            document.title = title;
-			history.pushState(stateObj, title, "#/"+pageName);
-            render.log(pageName+" loaded");
+	    this.component = function(page,component,element) {
+	    	render.loader('start');
+	    	var url = this.config.viewPath+page+'Components'+'/'+component;
+	    	$.get(url,{},function(data,status){
+	    		if(data) {
+	    			$('#'+element).html(data);
+		            updateUrl(page,component);
+		            render.loader('stop');
+		            return 0;
+		        }else{
+		        	$('#'+element).html('component not found');
+		   			console.log('component not found');
+		   			return 1;
+		        }
+		    }).fail(function() {
+		        render.page('404');
+		   		console.log('an error occured while loading component');
+		   		return 1;
+		    });
 	    };
-
+	    function updateUrl(page,component) {
+	    	if (component) {
+	        	render.config.currentPage = page;
+	        	render.config.currentComponent = component;
+	            var title = render.config.appTitle+" | "+page+" - "+component;
+	            var stateObj = { page: page };
+	            document.title = title;
+				history.pushState(stateObj, title, "#!/"+page+'/'+component);
+	            render.log(page+" loaded");
+	    	}else{
+	    		render.config.currentPage = page;
+	            var stateObj = { page: page };
+	            var title = render.config.appTitle+" | "+page;
+	            document.title = title;
+				history.pushState(stateObj, title, "#!/"+page);
+	            render.log(page+" loaded");
+	    	}
+	    };
 	    this.start = function(){
 	    	if(typeof jQuery == 'undefined'){
 	    		if(this.config.appMode == 'debug'){
@@ -55,21 +87,74 @@
 	    		$( document ).ready(function() {
 	    			render.log('App Started');
 	    			render.trackPageChange(true);
-				});
-	    		
-	    	}
-	    	
+	    			$(window).on('hashchange', function(e){
+	    				render.trackPageChange(true);
+					});
+				});    		
+	    	}	    	
 	    };
-	    this.getData = function() {
-	        this.log('active');
+	    this.postData = function(url,data,method,header) {
+	    	render.loader('start');
+	    	if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	        $.ajax({
+		        url: this.config.externalUrl+url,
+		        type: 'POST',
+		        data:data,
+		        beforeSend:function(xhr){
+		        	if(header){
+		            	xhr.setRequestHeader(header);	
+		        	}
+		        },
+		        success: function (result) {
+		            window[method](result,method);
+		        },
+		        error: function (result) {
+		            window[method](result,method);
+		        }
+		    });   
 	    };
 
-	    this.postData = function() {
-	        this.log('active');    
+	    this.getData = function(url,method,callbackData,header) {
+	        render.loader('start');
+	        if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	        if( callbackData){}else{callbackData = null};
+	        $.ajax({
+		        url: this.config.externalUrl+url,
+		        type: 'GET',
+		        data:data,
+		        beforeSend:function(xhr){
+		        	if(header){
+		            	xhr.setRequestHeader(header);	
+		        	}
+		        },
+		        success: function (result) {
+		            window[method](result,method, callbackData);
+		        },
+		        error: function (result) {
+		            window[method](result,method, callbackData);
+		        }
+		    });   
 	    };
 
-	    this.putData = function() {
-	        this.log('active');
+	    this.sendPut = function(url,data,method,header) {
+	        render.loader('start');
+	        if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	        $.ajax({
+		        url: this.config.externalUrl+url,
+		        type: 'PUT',
+		        data:data,
+		        beforeSend:function(xhr){
+		        	if(header){
+		            	xhr.setRequestHeader(header);	
+		        	}
+		        },
+		        success: function (result) {
+		            window[method](result,method);
+		        },
+		        error: function (result) {
+		            window[method](result,method);
+		        }
+		    });   
 	    };
 	    
 	    this.loader = function(val) {
@@ -83,35 +168,29 @@
 	   		if (val) {
 	   			var cPage = '';
 	   			cPage = window.location.href;
-	   			cPage = cPage.split('#');
+	   			cPage = cPage.split('#!');
 	   			
    				if (cPage[0]){
    					if(cPage[1]){
 		   				cPage = cPage[1].split("/");
-			   			if(cPage.lenght > 1 ){ 	
-			   				if (cPage[2] == '' || cPage[2] == null) {
-			   					console.log('single page');
-			   				}else{
-			   				console.log('components Detected');
-			   				}
-			   			}else{
-			   				if (cPage[1] == '' || cPage[1] == null || cPage[1] == '/') {
-			   					console.log('page not Detected');
-			   				}else{
-			   					console.log('single page');
-			   				}
-			   			}
-			   			console.dir(cPage);
+		   				if (cPage[1] == '' || cPage[1] == null || cPage[1] == '/') {
+		   					this.page('404');
+		   				}else{
+		   					this.page(cPage[1]);
+		   					if(cPage[2]){
+			   					if (cPage[2] == '' || cPage[2] == null || cPage[1] == '/') {
+				   					console.log('not a components');
+				   				}else{
+				   					console.log('component',cPage[2]);
+				   				}				   				
+				   			}
+		   				}
 			   		}else{
-			   			console.log(cPage);
+			   			console.log('page not detected');
 		   			}
-   				}else{
-   					console.log('not page');
    				}
-	   		}else{
-
-	   		}	
-	    }
+	   		}
+	   }
 	}
 	
 var render = new Render(null);

@@ -3,6 +3,7 @@
         'appTitle':'Render Test',
         'displayContainer':'display',
         'currentPage':'',
+        'currentComponent': '',
         'viewPath':'app/view/',
         'externalUrl':'',
         'internalUrl':'',
@@ -20,3 +21,4 @@
     };
  
 
+ 
