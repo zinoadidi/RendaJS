@@ -1,22 +1,28 @@
  
 	function Render(param){
-		this.config = {
-			appTitle: '',
-			displayContainer:'',
-			currentPage: '',
-			currentComponent: '',
-			viewPath:'',
-			externalUrl:'',
-			internalUrl:'',
-			appMode:'debug',
-			loader:{
-				img: '',
-				text:'',
-				showImg:'',
-				showTxt:'',
+		this.config = function(obj) {
+			render.config.appTitle = obj == null ? '' : obj.appTitle;
+		    render.config.displayContainer = obj == null ? '' : obj.displayContainer;
+		    render.config.currentPage = obj == null ? '' : obj.currentPage;
+		    render.config.currentComponent = obj == null ? '' : obj.currentComponent;
+		    render.config.viewPath = obj == null ? '' : obj.viewPath;
+		    render.config.externalUrl = obj == null ? '' : obj.externalUrl;
+		    render.config.internalUrl = obj == null ? '' : obj.internalUrl;
+		    render.config.appMode = obj == null ? 'debug' : obj.appMode;
+		    render.config.loader = obj == null ? {
+		    	imgUrl: '',
+				text:'Loading...',
+				showImg:false,
+				showTxt:true,
 				imgSize:'',
-				fontSize:''	
-			}
+				style:''
+		    } : obj.loader; 
+		    if(render.config.appTitle != '' && render.config.displayContainer !='' &&
+		    	render.config.viewPath != ''){
+		    	this.start();
+		    }else{
+		    	this.log('Unable to start app; basic settings not detected. Please fill in all neccessary fields to continue');
+		    }
 		};
 	    this.page = function(page) {
 	    	render.loader('start');
@@ -29,12 +35,12 @@
 		            return 0;
 		        }else{
 		        	render.page('404');
-		   			console.log('page not found');
+		   			render.log('page not found');
 		   			return 1;
 		        }
 		    }).fail(function() {
 		        render.page('404');
-		   		console.log('an error occured while loading page');
+		   		render.log('an error occured while loading page');
 		   		return 1;
 		    });
 	    };
@@ -49,12 +55,12 @@
 		            return 0;
 		        }else{
 		        	$('#'+element).html('component not found');
-		   			console.log('component not found');
+		   			render.log('component not found');
 		   			return 1;
 		        }
 		    }).fail(function() {
 		        render.page('404');
-		   		console.log('an error occured while loading component');
+		   		render.log('an error occured while loading component');
 		   		return 1;
 		    });
 	    };
@@ -86,16 +92,27 @@
 	    	}else{
 	    		$( document ).ready(function() {
 	    			render.log('App Started');
+	   				/*Initiate Loading Indicator*/	   
+			    	if (render.config.loader.showTxt == true) {
+			    		var loader = 
+			    		"<div style ='"+render.config.loader.style+"' class='loader'>"+
+			    		render.config.loader.text+"</div>";	
+			    	}else{
+			    		var loader = 
+			    		"<img src='"+render.config.loader.imgUrl+"' style ='"+render.config.loader.style+"' class='loader'/>";
+			    	}
+			    	$('body').append(loader);
+			    	render.loader();
 	    			render.trackPageChange(true);
 	    			$(window).on('hashchange', function(e){
 	    				render.trackPageChange(true);
 					});
 				});    		
-	    	}	    	
+	    	}  	
 	    };
 	    this.postData = function(url,data,method,header) {
 	    	render.loader('start');
-	    	if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	    	if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        $.ajax({
 		        url: this.config.externalUrl+url,
 		        type: 'POST',
@@ -116,7 +133,7 @@
 
 	    this.getData = function(url,method,callbackData,header) {
 	        render.loader('start');
-	        if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        if( callbackData){}else{callbackData = null};
 	        $.ajax({
 		        url: this.config.externalUrl+url,
@@ -138,7 +155,7 @@
 
 	    this.sendPut = function(url,data,method,header) {
 	        render.loader('start');
-	        if (method) {}else{console.log('fatal error, Please pass "method" param!');return false;}
+	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        $.ajax({
 		        url: this.config.externalUrl+url,
 		        type: 'PUT',
@@ -158,11 +175,17 @@
 	    };
 	    
 	    this.loader = function(val) {
-	        this.log('active');
+	    	if (val == 'start') {
+	        	$('.loader').show();
+	        }else{
+	        	$('.loader').hide();
+	        }
 	    };
 	    
 	    this.log = function(msg){
-	    	console.log(msg);
+	    	if (this.config.appMode =='debug') {
+	    		console.log(msg);
+	    	}else{}
 	    };
 	   this.trackPageChange = function(val){
 	   		if (val) {
@@ -179,14 +202,14 @@
 		   					this.page(cPage[1]);
 		   					if(cPage[2]){
 			   					if (cPage[2] == '' || cPage[2] == null || cPage[1] == '/') {
-				   					console.log('not a components');
+				   					render.log('not a components');
 				   				}else{
-				   					console.log('component',cPage[2]);
+				   					render.log('component',cPage[2]);
 				   				}				   				
 				   			}
 		   				}
 			   		}else{
-			   			console.log('page not detected');
+			   			render.log('page not detected');
 		   			}
    				}
 	   		}
@@ -195,25 +218,3 @@
 	
 var render = new Render(null);
 
-render.start();
-
-
-
-
-	/*code for consideration*/
-
-	/*
-		window.onerror = function(message, url, lineNumber) {  
-	  	//save error and send to server for example.
-	  	return true;
-		};  
-
-
-	*/
-
-	/*$( window ).on( "navigate", function( event, data ) {
-	  render.log('navigate');
-	});
-	$(window).on('hashchange ', function() {
-	  trackPageChange();
-	});*/

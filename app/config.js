@@ -1,24 +1,25 @@
     /*App settings*/
-    render.config = {
-        'appTitle':'Render Test',
-        'displayContainer':'display',
-        'currentPage':'',
-        'currentComponent': '',
-        'viewPath':'app/view/',
-        'externalUrl':'',
-        'internalUrl':'',
-        'appMode':'debug',
-        'httpReqHeader':'',
-        'httpRequestAuth':'',
+    var appSettings = {
+        appTitle:'Render Test',
+        displayContainer:'display',
+        currentPage:'',
+        currentComponent: '',
+        viewPath:'app/view/',
+        externalUrl:'',
+        internalUrl:'',
+        appMode:'production',
+        httpReqHeader:'',
+        httpRequestAuth:'',
         loader:{
-            img: '',
-            text:'',
-            showImg:'',
-            showTxt:'',
+            imgUrl: '',
+            text:'Loading...',
+            showImg:false,
+            showTxt:true,
             imgSize:'',
-            fontSize:'' 
+            style:''
         }
     };
+    render.config(appSettings);
  
 
  
