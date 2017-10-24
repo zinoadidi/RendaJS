@@ -7,7 +7,7 @@
         viewPath:'app/view/',
         externalUrl:'',
         internalUrl:'',
-        appMode:'production',
+        appMode:'debug',
         httpReqHeader:'',
         httpRequestAuth:'',
         loader:{

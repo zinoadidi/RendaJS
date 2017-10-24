@@ -129,8 +129,7 @@
 		            window[method](result,method);
 		        }
 		    });   
-	    };
-
+	    };	    
 	    this.getData = function(url,method,callbackData,header) {
 	        render.loader('start');
 	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
@@ -151,8 +150,7 @@
 		            window[method](result,method, callbackData);
 		        }
 		    });   
-	    };
-
+	    };	    
 	    this.sendPut = function(url,data,method,header) {
 	        render.loader('start');
 	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
@@ -173,15 +171,13 @@
 		        }
 		    });   
 	    };
-	    
 	    this.loader = function(val) {
 	    	if (val == 'start') {
 	        	$('.loader').show();
 	        }else{
 	        	$('.loader').hide();
 	        }
-	    };
-	    
+	    };  
 	    this.log = function(msg){
 	    	if (this.config.appMode =='debug') {
 	    		console.log(msg);
@@ -214,7 +210,26 @@
    				}
 	   		}
 	   }
+	   this.generateTable = function (data,columns,table){
+	   		if (typeof dataTable != 'undefined') {
+	   			if ($.fn.dataTable.isDataTable( '#'+table ) ) {
+		            $('#vendortable').DataTable({
+		                destroy:true,
+		                data: data,
+		                columns: columns
+		            });
+			    }else{
+		            $('#'+table).DataTable( {
+		                destroy:true,
+		                data: data,
+		                columns:columns
+		            });
+		    	}
+		    	this.styleTable();
+	   		}else{
+	   			this.log('An error occured generating dataTable. Please add dataTable library before using this function');
+	   		}
+	        
+    	}
 	}
-	
-var render = new Render(null);
-
+	var render = new Render(null);
