@@ -5,7 +5,7 @@
         currentPage:'',
         currentComponent: '',
         viewPath:'app/view/',
-        externalUrl:'',
+        externalUrl:'https://paydayinvestor.arm.com.ng/api/',
         internalUrl:'',
         appMode:'debug',
         httpReqHeader:'',
