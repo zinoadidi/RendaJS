@@ -1,4 +1,4 @@
- 
+https://paydayinvestor.arm.com.ng/api/ 
 	function Render(param){
 		this.config = function(obj) {
 			render.config.appTitle = obj == null ? '' : obj.appTitle;
@@ -9,6 +9,7 @@
 		    render.config.externalUrl = obj == null ? '' : obj.externalUrl;
 		    render.config.internalUrl = obj == null ? '' : obj.internalUrl;
 		    render.config.appMode = obj == null ? 'debug' : obj.appMode;
+		    render.config.defaultPage = obj == null ? 'home' : obj.defaultPage;
 		    render.config.loader = obj == null ? {
 		    	imgUrl: '',
 				text:'Loading...',
@@ -193,7 +194,7 @@
    					if(cPage[1]){
 		   				cPage = cPage[1].split("/");
 		   				if (cPage[1] == '' || cPage[1] == null || cPage[1] == '/') {
-		   					this.page('404');
+		   					this.page(this.config.defaultPage);
 		   				}else{
 		   					this.page(cPage[1]);
 		   					if(cPage[2]){
@@ -206,6 +207,7 @@
 		   				}
 			   		}else{
 			   			render.log('page not detected');
+		   				this.page(this.config.defaultPage);
 		   			}
    				}
 	   		}

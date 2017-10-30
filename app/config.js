@@ -2,6 +2,7 @@
     var appSettings = {
         appTitle:'Render Test',
         displayContainer:'display',
+        defaultPage:'home',
         currentPage:'',
         currentComponent: '',
         viewPath:'app/view/',
