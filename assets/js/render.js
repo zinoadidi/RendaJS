@@ -6,7 +6,7 @@ https://paydayinvestor.arm.com.ng/api/
 		    render.config.currentPage = obj == null ? '' : obj.currentPage;
 		    render.config.currentComponent = obj == null ? '' : obj.currentComponent;
 		    render.config.viewPath = obj == null ? '' : obj.viewPath;
-		    render.config.externalUrl = obj == null ? '' : obj.externalUrl;
+		    render.config.serverUrl = obj == null ? '' : obj.serverUrl;
 		    render.config.internalUrl = obj == null ? '' : obj.internalUrl;
 		    render.config.appMode = obj == null ? 'debug' : obj.appMode;
 		    render.config.defaultPage = obj == null ? 'home' : obj.defaultPage;
@@ -22,7 +22,7 @@ https://paydayinvestor.arm.com.ng/api/
 		    	render.config.viewPath != ''){
 		    	this.start();
 		    }else{
-		    	this.log('Unable to start app; basic settings not detected. Please fill in all neccessary fields to continue');
+		    	this.log('Unable to start app; please provide basic app config');
 		    }
 		};
 	    this.page = function(page) {
@@ -115,7 +115,7 @@ https://paydayinvestor.arm.com.ng/api/
 	    	render.loader('start');
 	    	if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        $.ajax({
-		        url: this.config.externalUrl+url,
+		        url: this.config.serverUrl+url,
 		        type: 'POST',
 		        data:data,
 		        beforeSend:function(xhr){
@@ -136,7 +136,7 @@ https://paydayinvestor.arm.com.ng/api/
 	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        if( callbackData){}else{callbackData = null};
 	        $.ajax({
-		        url: this.config.externalUrl+url,
+		        url: this.config.serverUrl+url,
 		        type: 'GET',
 		        data:data,
 		        beforeSend:function(xhr){
@@ -156,7 +156,7 @@ https://paydayinvestor.arm.com.ng/api/
 	        render.loader('start');
 	        if (method) {}else{render.log('fatal error, Please pass "method" param!');return false;}
 	        $.ajax({
-		        url: this.config.externalUrl+url,
+		        url: this.config.serverUrl+url,
 		        type: 'PUT',
 		        data:data,
 		        beforeSend:function(xhr){
