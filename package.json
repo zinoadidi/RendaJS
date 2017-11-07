@@ -1,0 +1,21 @@
+{
+  "name": "RendaJS",
+  "version": "1.0.0",
+  "main": "build/renda.js",
+  "scripts": {
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "lite": "lite-server",
+    "start": "concurrently \"npm run tsc:w\" \"npm run lite\" "
+  },
+  "author": "Zino Adidi",
+  "devDependencies": {
+    "@types/jquery": "^3.2.16",
+    "concurrently": "^3.5.0",
+    "lite-server": "^2.3.0",
+    "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "bind.js": "^1.1.1"
+  }
+}
