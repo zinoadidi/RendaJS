@@ -17,7 +17,7 @@ RendaJS can be implemented in two ways:
 ### *Node.JS / NPM Enabled Servers (commonJS, Typescript,etc)*
 renda.ts.js (Module Enabled) typescript implementation can be imported into any Typescript, NPM managed or commonJS enabled project. This means that the host server must allows import and exports of modules. *Example of such servers include NodeJS and Ngnix.*
 
-### *Non Node.JS / NPM Servers - (Plain Javascript via <script>tag</script>.*
+### *Non Node.JS / NPM Servers - (Plain Javascript via <script>tag</script>).*
 renda.js (Non Module Class Based) implementation can be imported into any html project using the script tag.
 
 Set up your project with RendaJS (Plain JS Implementation):
@@ -30,6 +30,8 @@ Set up your project with RendaJS (Plain JS Implementation):
 
  - RendaJS
    - build
-     - *renda.js*
+     - js
+       - *renda.js*
+     - ts
    - sample
    - src
