@@ -27,11 +27,12 @@ Set up your project with RendaJS (Plain JS Implementation):
     git clone https://github.com/zinoadidi/RendaJS.git
 ```
 2. Navigate to the directory structure as shown below and copy renda.js
-
- - RendaJS
-   - build
-     - js
-       - *renda.js*
-     - ts
-   - sample
-   - src
+```
+ / RendaJS
+   / build
+     / js
+       / *renda.js*
+     / ts
+   / sample
+   / src
+```
