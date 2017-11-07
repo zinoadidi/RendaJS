@@ -28,11 +28,11 @@ Set up your project with RendaJS (Plain JS Implementation):
 ```
 2. Navigate to the directory structure as shown below and copy renda.js
 ```
- / RendaJS
-   / build
-     / js
-       / *renda.js*
-     / ts
-   / sample
-   / src
+ /RendaJS/
+    /build/
+      /js/
+       /renda.js
+      /ts
+    /sample
+    /src
 ```
