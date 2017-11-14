@@ -6,7 +6,7 @@
 *
 */ 
     //Import all neccessary libraries and scripts
-    import * as $ from 'jquery'
+   // import * as $ from 'jquery'
     
     // renda Class
     class Renda {
