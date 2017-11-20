@@ -15,6 +15,9 @@ class Renda {
             appTitle: "",
             displayContainer: "",
             defaultPage: "",
+            loadDefaultPage: false,
+            trackUrlChanges: false,
+            registerPageHistory: true,
             viewPath: "",
             serverUrl: "",
             internalUrl: "",
@@ -25,12 +28,14 @@ class Renda {
             httpReqHeaders: "",
             httpRequestAuth: "",
             loader: {
+                active: false,
+                id: "",
                 imgUrl: "",
                 text: "",
                 showImg: false,
                 showTxt: false,
-                outterCss: "",
-                innerCss: ""
+                style: "",
+                class: ""
             },
             errorMsg: {
                 pageLoad: ":{ Error while loading page...",
@@ -57,103 +62,127 @@ class Renda {
                 showTxt: true,
                 outterCss: "",
                 innerCss: ""
-            } : obj['loader'];
+            } : obj[0]['loader'];
             // Check for basic requirement and run startup process.
             if (this.Config.appTitle != '' && this.Config.displayContainer != '' &&
                 this.Config.viewPath != '' && this.Config.errorPage != '') {
                 this.start();
             }
             else {
-                this.log(this.Config.error.appLoad + ': error with config data');
+                this.log(this.Config.errorMsg.appLoad + ': error with config data');
             }
         };
         //Begin Page function for loading view
         this.page = function (...obj) {
             this.loader('start');
-            let url = this.config.viewPath;
-            let page = obj[0][0];
+            let url = this.Config.viewPath;
+            let page = obj[0];
             let path = url + 'pages/' + page + '.html';
             let displayElem = this.Config.displayContainer;
             //check if display element is specified
-            if (obj[0][1])
-                displayElem = obj[0][1];
+            if (obj[1] && (obj[1] != null || obj[1] != 'null' || obj[1] != '')) {
+                displayElem = obj[1];
+            }
             else { } //do nothing
             let elem = document.getElementById(displayElem);
+            console.log(url);
+            console.log(page);
+            console.log(path);
+            console.log(displayElem);
+            console.log(elem);
+            console.log(obj);
             //Send ajax request for page
-            let httpReq = new XMLHttpRequest();
+            this.httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
             this.httpReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
+                checkReqStatus(this);
+            };
+            function checkReqStatus(reqState) {
+                if (reqState.readyState == 4 && reqState.status == 200) {
                     // Typical action to be performed when the document is ready:
-                    console.log('working');
-                    elem.innerHTML = this.response;
-                    this.updateUrl(page, '');
-                    this.loader('stop');
+                    elem.innerHTML = reqState.response;
+                    renda.updateUrl(page, '');
+                    renda.loader('stop');
                 }
-                else if (this.readyState == 404) {
-                    this.page(this.Config.errorPage);
-                    this.log(this.Config.error.pageLoad + ': page not found');
+                else if (reqState.readyState == 404) {
+                    renda.page(Config.errorPage);
+                    log(Config.errorMsg.pageLoad + ': page not found');
                     return 1;
                 }
                 else {
-                    elem.innerHTML = this.Config.error.pageLoad;
-                    this.log(this.Config.error.pageLoad);
+                    elem.innerHTML = Config.errorMsg.pageLoad;
+                    log(Config.errorMsg.pageLoad);
                     return 1;
                 }
-            };
+            }
             this.httpReq.open('GET', path, true);
             this.httpReq.send(null);
         };
         // load page components
         this.component = function (...obj) {
             this.loader('start');
-            let url = this.config.viewPath;
-            let page = obj[0][0];
-            let _component = obj[0][1];
+            let url = this.Config.viewPath;
+            let page = obj[0];
+            let _component = obj[1];
             let path = url + 'components/' + page + '/' + _component + '.html';
-            let displayElem = obj[0][1][2];
+            let displayElem = obj[2];
             let elem = document.getElementById(displayElem);
             //Send ajax request for page
-            let httpReq = new XMLHttpRequest();
+            this.httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
             this.httpReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
+                checkReqStatus(this);
+            };
+            function checkReqStatus(reqState) {
+                if (reqState.readyState == 4 && reqState.status == 200) {
                     // Typical action to be performed when the document is ready:
-                    elem.innerHTML = this.response;
-                    this.updateUrl(page, _component);
-                    this.loader('stop');
+                    elem.innerHTML = reqState.response;
+                    updateUrl(page, _component);
+                    renda.loader('stop');
                     return 0;
                 }
-                else if (this.readyState == 404) {
-                    this.page(this.Config.errorPage);
-                    this.log(this.Config.error.componentLoad + ': component not found');
+                else if (reqState.readyState == 404) {
+                    renda.page(Config.errorPage);
+                    log(Config.errorMsg.componentLoad + ': component not found');
                     return 1;
                 }
                 else {
-                    elem.innerHTML = this.Config.error.componentLoad;
-                    this.log(this.Config.error.componentLoad);
+                    elem.innerHTML = Config.errorMsg.componentLoad;
+                    log(Config.errorMsg.componentLoad);
                     return 1;
                 }
-            };
+            }
             this.httpReq.open('GET', path, true);
             this.httpReq.send('');
         };
         // update url 
         this.updateUrl = function (page, component) {
-            if (component) {
-                this.Config.currentPage = page;
-                this.Config.currentComponent = component;
-                var title = this.Config.appTitle + " | " + page + " - " + component;
-                var stateObj = { page: page };
-                document.title = title;
-                history.pushState(stateObj, title, "#!/" + page + '/' + component);
-                this.log(page + " loaded");
-            }
-            else {
-                this.Config.currentPage = page;
-                var stateObj = { page: page };
-                var title = this.Config.appTitle + " | " + page;
-                document.title = title;
-                history.pushState(stateObj, title, "#!/" + page);
-                this.log(page + " loaded");
+            if (this.Config.registerPageHistory == true) {
+                if (component) {
+                    this.Config.currentPage = page;
+                    this.Config.currentComponent = component;
+                    var title = this.Config.appTitle + " | " + page + " - " + component;
+                    var stateObj = { page: page };
+                    document.title = title;
+                    history.pushState(stateObj, title, "#!/" + page + '/' + component);
+                    this.log(page + " loaded");
+                }
+                else {
+                    this.Config.currentPage = page;
+                    var stateObj = { page: page };
+                    var title = this.Config.appTitle + " | " + page;
+                    document.title = title;
+                    history.pushState(stateObj, title, "#!/" + page);
+                    this.log(page + " loaded");
+                }
             }
         };
         this.start = function () {
@@ -163,83 +192,114 @@ class Renda {
             else {
             }
             /*Initiate Loading Indicator*/
-            if (this.Config.loader.showTxt == true) {
-                var loader = "<div style ='" + this.Config.loader.style + "' class='loader'>" +
-                    this.Config.loader.text + "</div>";
+            if (this.Config.loader['active'] != false) {
+                let loader;
+                if (this.Config.loader.showTxt == true) {
+                    loader = document.createElement('div');
+                    loader.innerHTML(this.Config.loader['text']);
+                }
+                else {
+                    loader = document.createElement('img');
+                    loader.setAttribute("src", this.Config.loader['imgUrl']);
+                }
+                loader.setAttribute("class", this.Config.loader['class']);
+                loader.setAttribute("style", this.Config.loader['style']);
+                loader.setAttribute("id", this.Config.loader['id']);
+                document.body.appendChild(loader);
+                console.log(loader);
+                console.log(document.body['loader']);
+                this.loader();
             }
-            else {
-                var loader = "<img src='" + this.Config.loader.imgUrl + "' style ='" + this.Config.loader.style + "' class='loader'/>";
+            else { }
+            if (this.Config.loadDefaultPage == true) {
+                this.trackPageChange(true);
             }
-            this.loader();
-            this.trackPageChange(true);
-            window.onhashchange = this.trackPageChange(true);
+            if (this.Config.trackUrlChanges == true) {
+                window.onhashchange = this.trackPageChange(true);
+            }
         };
         //send post
         this.postData = function (...obj) {
             this.loader('start');
-            let url = obj[0][0];
-            let data = obj[0][1];
-            let method = obj[0][2];
-            let header = obj[0][3];
+            let url = obj[0];
+            let data = obj[1];
+            let method = obj[2];
+            let header = obj[3];
             if (method) { }
             else {
-                this.log(this.Config.error.postErrorParam + 'please pass all options for post');
+                this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for post');
                 return false;
             }
             url = this.Config.serverUrl + url;
             //send request
-            let httpReq = new XMLHttpRequest();
-            httpReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200)
-                    window[method](this.response, method);
-                else
-                    window[method](this.response, method);
+            this.httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
+            this.httpReq.onreadystatechange = function () {
+                checkReqStatus(this);
             };
-            httpReq.open('POST', url, true);
+            function checkReqStatus(reqState) {
+                if (reqState.readyState == 4 && reqState.status == 200)
+                    window[method](reqState.response, method);
+                else
+                    window[method](reqState.response, method);
+            }
+            this.httpReq.open('POST', url, true);
             if (header)
                 header.forEach(element => {
-                    httpReq.setRequestHeader(element.name, element.value);
+                    this.httpReq.setRequestHeader(element.name, element.value);
                 });
             else { }
             this.httpReq.send(data);
         };
         this.getData = function (...obj) {
             this.loader('start');
-            let url = obj[0][0];
-            let method = obj[0][1];
+            let url = obj[0];
+            let method = obj[1];
             let callbackData;
             let header;
-            if (obj[0][2]) {
-                callbackData = obj[0][2];
+            if (obj[2]) {
+                callbackData = obj[2];
             }
             else {
                 callbackData = null;
             }
             ;
-            if (obj[0][3]) {
-                header = obj[0][3];
+            if (obj[3]) {
+                header = obj[3];
             }
             else {
                 header = null;
             }
             if (method) { }
             else {
-                this.log(this.Config.error.postErrorParam + 'please pass all options for get');
+                this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for get');
                 return false;
             }
             url = this.Config.serverUrl + url;
             //send request
-            let httpReq = new XMLHttpRequest();
-            httpReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200)
-                    window[method](this.response, method);
-                else
-                    window[method](this.response, method);
+            this.httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
+            this.httpReq.onreadystatechange = function () {
+                checkReqStatus(this);
             };
-            httpReq.open('GET', url, true);
+            function checkReqStatus(reqState) {
+                if (reqState.readyState == 4 && reqState.status == 200)
+                    window[method](reqState.response, method);
+                else
+                    window[method](reqState.response, method);
+            }
+            this.httpReq.open('GET', url, true);
             if (header)
                 header.forEach(element => {
-                    httpReq.setRequestHeader(element.name, element.value);
+                    this.httpReq.setRequestHeader(element.name, element.value);
                 });
             else { }
             this.httpReq.send('');
@@ -247,45 +307,57 @@ class Renda {
         //send put
         this.putData = function (...obj) {
             this.loader('start');
-            let url = obj[0][0];
-            let data = obj[0][1];
-            let method = obj[0][2];
-            let header = obj[0][3];
+            let url = obj[0];
+            let data = obj[1];
+            let method = obj[2];
+            let header = obj[3];
             if (method) { }
             else {
-                this.log(this.Config.error.postErrorParam + 'please pass all options for put');
+                this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for put');
                 return false;
             }
             url = this.Config.serverUrl + url;
             //send request
-            let httpReq = new XMLHttpRequest();
-            httpReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200)
-                    window[method](this.response, method);
-                else
-                    window[method](this.response, method);
+            this.httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
+            this.httpReq.onreadystatechange = function () {
+                checkReqStatus(this);
             };
-            httpReq.open('PUT', url, true);
+            function checkReqStatus(reqState) {
+                if (reqState.readyState == 4 && reqState.status == 200)
+                    window[method](reqState.response, method);
+                else
+                    window[method](reqState.response, method);
+            }
+            this.httpReq.open('PUT', url, true);
             if (header)
                 header.forEach(element => {
-                    httpReq.setRequestHeader(element.name, element.value);
+                    this.httpReq.setRequestHeader(element.name, element.value);
                 });
             else { }
             this.httpReq.send(data);
         };
         //loader
         this.loader = function (val) {
-            let elem = document.getElementById(this.Config.loader['id']);
-            if (val == 'start') {
-                elem.style.display = "block";
+            if (this.Config.loader['active'] != false) {
+                let elem = document.getElementById(this.Config.loader['id']);
+                if (val == 'start') {
+                    elem.style.display = "block";
+                }
+                else {
+                    elem.style.display = "none";
+                }
             }
             else {
-                elem.style.display = "none";
             }
         };
         // log to console
         this.log = function (msg) {
-            if (this.Config.appMode == 'debug') {
+            if (renda.Config.appMode == 'debug') {
                 console.log(msg);
             }
             else { }
@@ -319,7 +391,8 @@ class Renda {
                 }
             }
         };
-        let httpReq;
+        let httpRequest;
+        let httpReq = httpRequest;
         /*
          this.httpReq  = new XMLHttpRequest()
          this.httpReq.onreadystatechange =function(){
