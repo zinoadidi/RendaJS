@@ -10,8 +10,17 @@
     
     // renda Class
     class Renda {
-        constructor(){}
-        
+        constructor(){
+            this.httpReq  = new XMLHttpRequest()
+            this.httpReq.onreadystatechange =function(){
+                if (this.readyState == 4 && this.status == 200) {
+                    // Typical action to be performed when the document is ready:
+                    return this
+                 }else{
+                    return this
+                 }
+            }
+        }
         // APP Settings
         private Config = {
             appTitle:"",
@@ -40,7 +49,10 @@
                 appLoad:"App Start Failed"
             } 
         }
-        
+
+        // Define ajax structure for server requests
+        private httpReq:XMLHttpRequest;
+       
         // begin configuration for renda
         public config = function(...obj:string[]){
             // Allocate user settings to  app settings

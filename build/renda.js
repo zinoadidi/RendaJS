@@ -97,6 +97,16 @@ class Renda {
                     return 1;
                 });
         };
+        this.httpReq = new XMLHttpRequest();
+        this.httpReq.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                return this;
+            }
+            else {
+                return this;
+            }
+        };
     }
 }
 //export default 'Renda';
