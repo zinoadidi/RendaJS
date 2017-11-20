@@ -49,26 +49,19 @@ class Renda {
             // Allocate user settings to  app settings
             this.Config.appTitle = obj == null ? 'Renda | Start Page' : obj[0]['appTitle'];
             this.Config.displayContainer = obj == null ? 'display' : obj[0]['displayContainer'];
-            this.Config.loadDefaultPage = obj == null ? false : obj[0]['loadDefaultPage'];
-            this.Config.trackUrlChanges = obj == null ? false : obj[0]['trackUrlChanges'];
-            this.Config.registerPageHistory = obj == null ? true : obj[0]['registerPageHistory'];
             this.Config.viewPath = obj == null ? 'app/view/' : obj[0]['viewPath'];
             this.Config.serverUrl = obj == null ? '' : obj[0]['serverUrl'];
             this.Config.internalUrl = obj == null ? '' : obj[0]['internalUrl'];
             this.Config.errorPage = obj == null ? '404' : obj[0]['errorPage'];
             this.Config.appMode = obj == null ? 'debug' : obj[0]['appMode'];
-            this.Config.httpReqHeaders = obj == null ? {} : obj[0]['httpReqHeaders'];
-            this.Config.httpRequestAuth = obj == null ? {} : obj[0]['httpRequestAuth'];
             this.Config.defaultPage = obj == null ? 'home' : obj[0]['defaultPage'];
             this.Config.loader = obj == null ? {
                 imgUrl: "",
                 text: "Loading...",
                 showImg: false,
                 showTxt: true,
-                style: "",
-                class: "",
-                active: false,
-                id: ""
+                outterCss: "",
+                innerCss: ""
             } : obj[0]['loader'];
             // Check for basic requirement and run startup process.
             if (this.Config.appTitle != '' && this.Config.displayContainer != '' &&
@@ -224,20 +217,15 @@ class Renda {
         //send post
         this.postData = function (...obj) {
             this.loader('start');
+            console.dir(obj);
             let url = obj[0];
             let data = obj[1];
             let method = obj[2];
-            let header;
+            let header = obj[3];
             if (method) { }
             else {
                 this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for post');
                 return false;
-            }
-            if (obj[3] && obj[3] != null) {
-                header = obj[3];
-            }
-            else {
-                header = this.Config.httpReqHeaders;
             }
             url = this.Config.serverUrl + url;
             //send request
@@ -249,14 +237,14 @@ class Renda {
             let loader = this.loader;
             let _page = this.page;
             httpReq.open('POST', url, true);
-            console.dir(header);
             if (header) {
-                for (let element in header) {
-                    console.log(element);
-                    //this.httpReq.setRequestHeader(element.name, element.value);
-                }
+                /* header.forEach(element => {
+                    this.httpReq.setRequestHeader(element.name, element.value);
+                }); */
             }
+            httpReq.send(data);
             httpReq.onreadystatechange = function () {
+                console.log(window[method]);
                 console.log(this.response);
             };
         };
