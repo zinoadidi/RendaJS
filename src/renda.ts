@@ -9,8 +9,13 @@
    // import * as $ from 'jquery'
     
     // renda Class
+    
+    
     class Renda {
-        constructor(){}
+        constructor(){
+            let httpReq: XMLHttpRequest;
+           
+        }
         
         // APP Settings
         private Config = {
@@ -71,7 +76,7 @@
        
         //Begin Page function for loading view
         public page = function(...obj:any[]){
-            // peace keeping
+            
             this.loader('start')
             let url:string = this.config.viewPath
             let page:string = obj[0][0]
@@ -84,12 +89,24 @@
             else    //do nothing
 
             //Send ajax request for page
+            this.httpReq = new XMLHttpRequest();
+            this.httpReq.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Typical action to be performed when the document is ready:
+                    console.log('working');
+                    document.getElementById(displayElem).innerHTML = data;
+                    this.updateUrl(page, null);
+                    this.loader('stop');
+                    return 0;
+                    console.log(this.responseText);
+                }
+                else {
+                    console.log('not working');
+                }
+            };
 	    	$.get(url+page,{},function(data,status){
 	    		if(data) {
-		            $('#'+displayElem).html(data);
-		            this.updateUrl(page,null);
-		            this.loader('stop');
-		            return 0;
+		           
 		        }else{
 		        	this.page(this.Config.errorPage);
 		   			this.log(this.Config.error.pageLoad+': page not found');
