@@ -262,20 +262,43 @@
         url = this.Config.serverUrl+url;
         //send request
         let httpReq = this.httpRequest; 
-        httpReq = new XMLHttpRequest();let Config = this.Config;
-        let log = this.log;let updateUrl = this.updateUrl; let loader =this.loader; 
-        let _page = this.page             
+        httpReq = new XMLHttpRequest();
+        let Config = this.Config;
+        let log = this.log;
+        let updateUrl = this.updateUrl; 
+        let loader =this.loader; 
+        let _page = this.page;     
         httpReq.open('POST', url, true);   
-        console.dir(header);
         if(header){
-            for (let element in header) {
-                console.log(element);
-                //this.httpReq.setRequestHeader(element.name, element.value);
-            }
-        }   
+            header.forEach(function (item, key) {
+                httpReq.setRequestHeader(key, item);   
+            });
+        }else{}
+        //httpReq.withCredentials = true;
         httpReq.onreadystatechange = function () {
-            console.log(this.response)                         
-        };
+            httpReq.onerror = function(){
+                console.log('request failed:',this.response);
+                return false;
+            }
+            if (httpReq.readyState == 4){
+                let response = String(this.response);
+                if(this.status){
+                    if(this.response){
+                        if(response !=''&&response != 'null' 
+                        && response !=' ' && response != 'undefined'
+                        && response.length >1){         
+                            window[method](this.response); 
+                            return false;                                   
+                        }else{
+                            console.log('preflight:',this.response)
+                            return false;
+                        }  
+                    }
+                }
+            }          
+        };            
+        httpReq.send(data); 
+        return false;  
        }
         public getData = function(...obj:any[]){
             this.loader('start')
@@ -292,25 +315,36 @@
             url = this.Config.serverUrl+url;
             //send request
             let httpReq = this.httpRequest; 
-            httpReq = new XMLHttpRequest();let Config = this.Config;
-            let log = this.log;let updateUrl = this.updateUrl; let loader =this.loader; 
-            let _page = this.page             
-            httpReq.onreadystatechange = function () {
-                checkReqStatus(this)
-            };
-            function checkReqStatus(reqState){
-                if (reqState.readyState == 4 && reqState.status == 200) 
-                    window[method](reqState.response,method);
-                else
-                    window[method](reqState.response,method);
-            }
+            httpReq = new XMLHttpRequest();    
+            httpReq.open('GET', url, true);  
             if(header){
-                /* header.forEach(element => {
-                    this.httpReq.setRequestHeader(element.name, element.value);
-                }); */
-            }
-            else{}
-            httpReq.open('GET', url, true);            
+                header.forEach(function (item, key) {
+                    httpReq.setRequestHeader(key, item);   
+                });
+            }else{}
+            //httpReq.withCredentials = true;
+            httpReq.onreadystatechange = function () {
+                httpReq.onerror = function(){
+                    console.log('request failed:',this.response);
+                    return false;
+                }
+                if (httpReq.readyState == 4){
+                    let response = String(this.response);
+                    if(this.status){
+                        if(this.response){
+                            if(response !=''&&response != 'null' 
+                            && response !=' ' && response != 'undefined'
+                            && response.length >1){         
+                                window[method](this.response); 
+                                return false;                                   
+                            }else{
+                                console.log('preflight:',this.response)
+                                return false;
+                            }  
+                        }
+                    }
+                }          
+            };                      
             httpReq.send('');
         }
         //send put
@@ -419,6 +453,28 @@
         }
     }
     
+    /* Quick fixes for smoooth sailing */
+    /**
+ * Object.prototype.forEach() polyfill
+ * https://gomakethings.com/looping-through-objects-with-es6/
+ * @author Chris Ferdinandi
+ * @license MIT
+ */
+if (!Object.prototype['forEach']) {
+    Object.defineProperty(Object.prototype, 'forEach', {
+        value: function (callback, thisArg) {
+            if (this == null) {
+                throw new TypeError('Not an object');
+            }
+            thisArg = thisArg || window;
+            for (var key in this) {
+                if (this.hasOwnProperty(key)) {
+                    callback.call(thisArg, this[key], key, this);
+                }
+            }
+        }
+    });
+}
+
     //export default 'Renda';
-   
     var renda = new Renda();
