@@ -99,35 +99,57 @@ class Renda {
             //Send ajax request for page
             let httpReq = this.httpRequest;
             httpReq = new XMLHttpRequest();
-            let Config = this.Config;
-            let log = this.log;
-            let updateUrl = this.updateUrl;
-            let loader = this.loader;
-            let _page = this.page;
+            httpReq.open('GET', path, true);
             httpReq.onreadystatechange = function () {
-                checkReqStatus(this);
+                httpReq.onerror = function () {
+                    console.log('request failed:', this.response);
+                    return false;
+                };
+                if (httpReq.readyState == 4) {
+                    let response = String(this.response);
+                    if (this.status == 200) {
+                        if (this.response) {
+                            if (response != '' && response != 'null'
+                                && response != ' ' && response != 'undefined'
+                                && response.length > 1) {
+                                renda.updateElement(this.responseText, displayElem);
+                                renda.updateUrl(page, '');
+                                return false;
+                            }
+                            else {
+                                console.log('preflight:', this.response);
+                                return false;
+                            }
+                        }
+                    }
+                    if (this.status == 404) {
+                        renda.page(renda.Config.errorPage);
+                        renda.log(renda.Config.errorMsg.pageLoad + ': page not found: ' + page);
+                    }
+                }
             };
-            function checkReqStatus(reqState) {
-                if (reqState.readyState == 4 && reqState.status == 200) {
+            httpReq.setRequestHeader('Content-Type', 'text/html');
+            httpReq.send();
+            return false;
+            /* httpReq = new XMLHttpRequest();let Config = this.Config;
+            let log = this.log;
+            httpReq.open('GET', path, true);
+            httpReq.onreadystatechange = function () {
+                if (this.status == 200) {
                     // Typical action to be performed when the document is ready:
-                    document.getElementById(displayElem).innerHTML = reqState.responseText;
-                    log(page + ' Loaded');
+                    document.getElementById(displayElem).innerHTML = this.response;
                     renda.updateUrl(page, '');
                     return false;
-                }
-                else if (reqState.readyState == 404) {
+                }else{
                     renda.page(Config.errorPage);
-                    log(Config.errorMsg.pageLoad + ': page not found');
-                    return false;
+                    log(Config.errorMsg.pageLoad+': page not found: '+page);
                 }
-                else {
-                    document.getElementById(displayElem).innerHTML = Config.errorMsg.pageLoad;
-                    log(Config.errorMsg.pageLoad + ' request failed permanently' + page, reqState.readyState + ':' + reqState.status);
-                    return false;
-                }
-            }
-            httpReq.open('GET', path, true);
+                log(this.readyState+':'+this.status);
+                log("url:"+path)
+                return false;
+            };
             httpReq.send();
+            return false; */
         };
         // load page components
         this.component = function (...obj) {
@@ -143,32 +165,23 @@ class Renda {
             httpReq = new XMLHttpRequest();
             let Config = this.Config;
             let log = this.log;
-            let updateUrl = this.updateUrl;
-            let loader = this.loader;
-            let _page = this.page;
             httpReq.onreadystatechange = function () {
-                checkReqStatus(this);
-            };
-            function checkReqStatus(reqState) {
-                if (reqState.readyState == 4 && reqState.status == 200) {
+                if (this.status == 200) {
                     // Typical action to be performed when the document is ready:
-                    elem.innerHTML = reqState.response;
-                    renda.updateUrl(page, _component);
-                    return 0;
-                }
-                else if (reqState.readyState == 404) {
-                    renda.page(Config.errorPage);
-                    log(Config.errorMsg.componentLoad + ': component not found');
-                    return 1;
+                    document.getElementById(displayElem).innerHTML = this.response;
+                    renda.updateUrl(page, '');
+                    return false;
                 }
                 else {
-                    elem.innerHTML = Config.errorMsg.componentLoad;
-                    log(Config.errorMsg.componentLoad);
-                    return 1;
+                    renda.page(Config.errorPage);
+                    log(Config.errorMsg.pageLoad + ': page not found: ' + page);
                 }
-            }
-            httpReq.open('GET', path, true);
-            httpReq.send('');
+                log(this.readyState + ':' + this.status);
+                log("url:" + path);
+                return false;
+            };
+            httpReq.send();
+            return false;
         };
         // update url 
         this.updateUrl = function (page, component) {
@@ -478,6 +491,13 @@ class Renda {
             else {
                 return true;
             }
+        };
+        this.updateElement = function (content, elem) {
+            var html = document.createElement('div');
+            html.innerHTML = content;
+            console.log(html);
+            document.getElementById(elem).innerHTML = '';
+            document.getElementById(elem).appendChild(html);
         };
         let httpRequest;
     }
