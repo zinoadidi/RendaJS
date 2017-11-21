@@ -35,3 +35,10 @@ Set up your project with RendaJS (Plain JS Implementation):
      - ts
    - sample
    - src
+
+
+### .postData(url:*required string*,data:*required any*, method:*callback method*, headers:*optional json object*,serverUrl: *optional string*)
+*Discription....*
+
+### .getData(url:*required string*,method:*callback method* ,callbackData:*optional any*,headers:*optional json object*,serverUrl: *optional string*)
+*Discription....*
