@@ -112,7 +112,7 @@ class Renda {
                             if (response != '' && response != 'null'
                                 && response != ' ' && response != 'undefined'
                                 && response.length > 1) {
-                                renda.updateElement(this.responseText, displayElem);
+                                renda.updateElement(this.response, displayElem);
                                 renda.updateUrl(page, '');
                                 return false;
                             }
@@ -126,6 +126,7 @@ class Renda {
                         renda.page(renda.Config.errorPage);
                         renda.log(renda.Config.errorMsg.pageLoad + ': page not found: ' + page);
                     }
+                    renda.loader('stop');
                 }
             };
             httpReq.setRequestHeader('Content-Type', 'text/html');
@@ -134,7 +135,6 @@ class Renda {
         };
         // load page components
         this.component = function (...obj) {
-            this.loader('start');
             let url = this.Config.viewPath;
             let page = obj[0];
             let _component = obj[1];
@@ -157,7 +157,7 @@ class Renda {
                             if (response != '' && response != 'null'
                                 && response != ' ' && response != 'undefined'
                                 && response.length > 1) {
-                                renda.updateElement(this.responseText, displayElem);
+                                renda.updateElement(this.response, displayElem);
                                 renda.updateUrl(page, _component);
                                 return false;
                             }
@@ -234,9 +234,82 @@ class Renda {
                 window.onhashchange = this.trackPageChange(true);
             }
         };
+        // handle http requests
+        this.handleRequests = function (...obj) {
+            let url = obj[0];
+            let data = obj[1];
+            let method = obj[2];
+            let header;
+            let serverUrl;
+            let reqType;
+            if (method) { }
+            else {
+                this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for post');
+                return false;
+            }
+            if (obj[3] && obj[3] != null) {
+                header = obj[3];
+            }
+            else {
+                header = this.Config.httpReqHeaders;
+            }
+            if (obj[4] && obj[4] != null) {
+                serverUrl = obj[4];
+            }
+            else {
+                serverUrl = this.Config.serverUrl;
+            }
+            url = serverUrl + url;
+            //send request
+            let httpReq = this.httpRequest;
+            httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl;
+            let loader = this.loader;
+            let _page = this.page;
+            httpReq.open(reqType, url, true);
+            if (header) {
+                header.forEach(function (item, key) {
+                    httpReq.setRequestHeader(key, item);
+                });
+            }
+            else { }
+            if (this.Config.httpRequestAuth['status'] == true) {
+                let authName = this.Config.httpRequestAuth['authName'];
+                let authToken = this.Config.httpRequestAuth['authToken'];
+                //httpReq.withCredentials = true;
+                httpReq.setRequestHeader("Authorization", authName + " " + authToken);
+            }
+            httpReq.onreadystatechange = function () {
+                httpReq.onerror = function () {
+                    console.log('request failed:', this.response);
+                    return false;
+                };
+                if (httpReq.readyState == 4) {
+                    let response = String(this.response);
+                    if (this.status) {
+                        if (this.response) {
+                            if (response != '' && response != 'null'
+                                && response != ' ' && response != 'undefined'
+                                && response.length > 1) {
+                                window[method](this.response);
+                                return false;
+                            }
+                            else {
+                                console.log('preflight:', this.response);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            };
+            httpReq.send(data);
+            return false;
+        };
         //send post
-        this.postData = function (...obj) {
-            this.loader('start');
+        this.post = function (...obj) {
+            //this.loader('start')
             let url = obj[0];
             let data = obj[1];
             let method = obj[2];
@@ -307,8 +380,8 @@ class Renda {
             httpReq.send(data);
             return false;
         };
-        this.getData = function (...obj) {
-            this.loader('start');
+        this.get = function (...obj) {
+            //this.loader('start')
             let url = obj[0];
             let method = obj[1];
             let callbackData;
@@ -362,7 +435,7 @@ class Renda {
                             if (response != '' && response != 'null'
                                 && response != ' ' && response != 'undefined'
                                 && response.length > 1) {
-                                window[method](this.response);
+                                window[method](this.response, callbackData);
                                 return false;
                             }
                             else {
@@ -376,8 +449,8 @@ class Renda {
             httpReq.send('');
         };
         //send put
-        this.putData = function (...obj) {
-            this.loader('start');
+        this.put = function (...obj) {
+            //this.loader('start')
             let url = obj[0];
             let data = obj[1];
             let method = obj[2];
@@ -418,10 +491,10 @@ class Renda {
         this.loader = function (val) {
             if (this.Config.loader['active'] != false) {
                 if (val == 'start') {
-                    //document.getElementById(this.Config.loader['id']).style.display = "block";
+                    document.getElementById(this.Config.loader['id']).style.display = "block";
                 }
                 else {
-                    //document.getElementById(this.Config.loader['id']).style.display = "none";                
+                    document.getElementById(this.Config.loader['id']).style.display = "none";
                 }
             }
             else {
@@ -487,12 +560,7 @@ class Renda {
             }
         };
         this.updateElement = function (content, elem) {
-            //var html:any = document.createElement('div');
-            //html.innerHTML = content;           
             $('#' + elem).html(content);
-            //document.getElementById(elem).innerHTML = document.getElementById('hiddenDiv').innerHTML;   
-            //let ele:any = document.getElementById(elem);  
-            // ele.innerHTML = content;  
         };
         let httpRequest;
     }

@@ -124,7 +124,7 @@
                             if(response !=''&&response != 'null' 
                             && response !=' ' && response != 'undefined'
                             && response.length >1){
-                                renda.updateElement(this.responseText,displayElem)
+                                renda.updateElement(this.response,displayElem)
                                 renda.updateUrl(page, '');
                                 return false;                                          
                             }else{
@@ -137,6 +137,7 @@
                         renda.page(renda.Config.errorPage);
                         renda.log(renda.Config.errorMsg.pageLoad+': page not found: '+page);
                     }
+                    renda.loader('stop')
                 }          
             };            
             httpReq.setRequestHeader('Content-Type', 'text/html');
@@ -147,7 +148,6 @@
         
         // load page components
         public component = function(...obj:any[]){
-            this.loader('start')
             let url:string = this.Config.viewPath
             let page:string = obj[0]
             let _component:string = obj[1]            
@@ -170,7 +170,7 @@
                             if(response !=''&&response != 'null' 
                             && response !=' ' && response != 'undefined'
                             && response.length >1){
-                                renda.updateElement(this.responseText,displayElem)
+                                renda.updateElement(this.response,displayElem)
                                 renda.updateUrl(page, _component);
                                 return false;                                          
                             }else{
@@ -245,10 +245,81 @@
                 window.onhashchange = this.trackPageChange(true);
             }
             		
-	    }  	
+        }  	
+        // handle http requests
+        public handleRequests = function(...obj:any[]){
+    
+            let url:string = obj[0]
+            let data:any = obj[1]
+            let method:string = obj[2]
+            let header:any;
+            let serverUrl:string;
+            let reqType:string;
+
+            if (method){}else{
+                this.log(this.Config.errorMsg.postErrorParam  +'please pass all options for post'); 
+                return false;
+            }
+            if (obj[3] && obj[3]!=null){
+                header = obj[3];
+            }else{
+                header = this.Config.httpReqHeaders;            
+            }
+            if (obj[4] && obj[4]!=null){
+                serverUrl = obj[4];
+            }else{
+                serverUrl = this.Config.serverUrl;
+            }
+            
+            url = serverUrl+url;
+            //send request
+            let httpReq = this.httpRequest; 
+            httpReq = new XMLHttpRequest();
+            let Config = this.Config;
+            let log = this.log;
+            let updateUrl = this.updateUrl; 
+            let loader =this.loader; 
+            let _page = this.page;     
+            httpReq.open(reqType, url, true);   
+            if(header){
+                header.forEach(function (item, key) {
+                    httpReq.setRequestHeader(key, item);   
+                });
+            }else{}
+            if(this.Config.httpRequestAuth['status'] == true){
+                let authName = this.Config.httpRequestAuth['authName']
+                let authToken = this.Config.httpRequestAuth['authToken']
+                //httpReq.withCredentials = true;
+                httpReq.setRequestHeader("Authorization",authName+ " " + authToken);               
+            }
+            httpReq.onreadystatechange = function () {
+                httpReq.onerror = function(){
+                    console.log('request failed:',this.response);
+                    return false;
+                }
+                if (httpReq.readyState == 4){
+                    let response = String(this.response);
+                    if(this.status){
+                        if(this.response){
+                            if(response !=''&&response != 'null' 
+                            && response !=' ' && response != 'undefined'
+                            && response.length >1){         
+                                window[method](this.response); 
+                                return false;                                   
+                            }else{
+                                console.log('preflight:',this.response)
+                                return false;
+                            }  
+                        }
+                    }
+                }          
+            };            
+            httpReq.send(data); 
+            return false;  
+           }
        //send post
-       public postData = function(...obj:any[]){
-        this.loader('start')
+       public post = function(...obj:any[]){
+        //this.loader('start')
 
         let url:string = obj[0]
         let data:any = obj[1]
@@ -316,8 +387,8 @@
         httpReq.send(data); 
         return false;  
        }
-        public getData = function(...obj:any[]){
-            this.loader('start')
+        public get = function(...obj:any[]){
+            //this.loader('start')
             let url:string = obj[0]
             let method:string = obj[1]
             let callbackData:any;
@@ -329,7 +400,6 @@
                 this.log(this.Config.errorMsg.postErrorParam  +'please pass all options for get'); 
                 return false;
             }
-
             if (obj[4] && obj[4]!=null){
                 serverUrl = obj[4];
             }else{
@@ -359,7 +429,7 @@
                             if(response !=''&&response != 'null' 
                             && response !=' ' && response != 'undefined'
                             && response.length >1){         
-                                window[method](this.response); 
+                                window[method](this.response,callbackData); 
                                 return false;                                   
                             }else{
                                 console.log('preflight:',this.response)
@@ -372,8 +442,8 @@
             httpReq.send('');
         }
         //send put
-        public putData = function(...obj:any[]){
-            this.loader('start')
+        public put = function(...obj:any[]){
+            //this.loader('start')
             let url:string = obj[0]
             let data:string = obj[1]
             let method:string = obj[2]
@@ -410,9 +480,9 @@
         public loader = function(val:string){
             if(this.Config.loader['active']!=false){
                 if (val == 'start') {
-                    //document.getElementById(this.Config.loader['id']).style.display = "block";
+                    document.getElementById(this.Config.loader['id']).style.display = "block";
                 }else{
-                    //document.getElementById(this.Config.loader['id']).style.display = "none";                
+                    document.getElementById(this.Config.loader['id']).style.display = "none";                
                 }
             }else{
             }
@@ -473,15 +543,8 @@
             }
     
         }
-        public updateElement = function(content:any,elem:string){
-            
-            //var html:any = document.createElement('div');
-            //html.innerHTML = content;           
-            $('#'+elem).html(content); 
-            //document.getElementById(elem).innerHTML = document.getElementById('hiddenDiv').innerHTML;   
-            //let ele:any = document.getElementById(elem);  
-           // ele.innerHTML = content;  
-                                 
+        public updateElement = function(content:any,elem:string){      
+            $('#'+elem).html(content);                      
         }
     }
 
