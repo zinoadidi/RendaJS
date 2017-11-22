@@ -14,6 +14,7 @@
     class Renda {
         constructor(){
             let httpRequest: XMLHttpRequest;
+      
         }
         
         // APP Settings
@@ -141,25 +142,6 @@
             httpReq.setRequestHeader('Content-Type', 'text/html');
             httpReq.send(); 
             return false;  
-            /* httpReq = new XMLHttpRequest();let Config = this.Config;
-            let log = this.log; 
-            httpReq.open('GET', path, true);           
-            httpReq.onreadystatechange = function () {
-                if (this.status == 200) {
-                    // Typical action to be performed when the document is ready:
-                    document.getElementById(displayElem).innerHTML = this.response;
-                    renda.updateUrl(page, '');
-                    return false;
-                }else{
-                    renda.page(Config.errorPage);
-                    log(Config.errorMsg.pageLoad+': page not found: '+page);
-                }
-                log(this.readyState+':'+this.status);
-                log("url:"+path)
-                return false;
-            };
-            httpReq.send();
-	    	return false; */
         };
         
         
@@ -174,23 +156,39 @@
             let elem =  document.getElementById(displayElem)
             let httpReq = this.httpRequest; 
             //Send ajax request for page
-            httpReq = new XMLHttpRequest();let Config = this.Config;let log = this.log; 
+            httpReq = new XMLHttpRequest();
+            httpReq.open('GET', path, true);   
             httpReq.onreadystatechange = function () {
-                if (this.status == 200) {
-                    // Typical action to be performed when the document is ready:
-                    document.getElementById(displayElem).innerHTML = this.response;
-                    renda.updateUrl(page, '');
+                httpReq.onerror = function(){
+                    console.log('request failed:',this.response);
                     return false;
-                }else{
-                    renda.page(Config.errorPage);
-                    log(Config.errorMsg.pageLoad+': page not found: '+page);
                 }
-                log(this.readyState+':'+this.status);
-                log("url:"+path)
-                return false;
-            };
-            httpReq.send();
-	    	return false;	    	
+                if (httpReq.readyState == 4){
+                    let response = String(this.response);
+                    if(this.status == 200){
+                        if(this.response){
+                            if(response !=''&&response != 'null' 
+                            && response !=' ' && response != 'undefined'
+                            && response.length >1){
+                                renda.updateElement(this.responseText,displayElem)
+                                renda.updateUrl(page, _component);
+                                return false;                                          
+                            }else{
+                                console.log('preflight:',this.response)
+                                return false;
+                            }  
+                        }
+                    }
+                    if(this.status == 404){
+                        let msg =renda.Config.errorMsg.pageLoad+': component not found: '+page+'::'+_component;
+                        renda.updateElement(msg,displayElem)
+                        renda.log(msg);
+                    }
+                }          
+            };            
+            httpReq.setRequestHeader('Content-Type', 'text/html');
+            httpReq.send(); 
+  	
         };
         // update url 
         public updateUrl = function(page:string,component:string){
@@ -412,12 +410,11 @@
         public loader = function(val:string){
             if(this.Config.loader['active']!=false){
                 if (val == 'start') {
-                    document.getElementById(this.Config.loader['id']).style.display = "block";
+                    //document.getElementById(this.Config.loader['id']).style.display = "block";
                 }else{
-                    document.getElementById(this.Config.loader['id']).style.display = "none";                
+                    //document.getElementById(this.Config.loader['id']).style.display = "none";                
                 }
             }else{
-
             }
         }
         // log to console
@@ -477,14 +474,17 @@
     
         }
         public updateElement = function(content:any,elem:string){
-            var html = document.createElement('div');
-            html.innerHTML = content;
-            console.log(html)            
-            document.getElementById(elem).innerHTML = ''; 
-            document.getElementById(elem).appendChild(html);                               
+            
+            //var html:any = document.createElement('div');
+            //html.innerHTML = content;           
+            $('#'+elem).html(content); 
+            //document.getElementById(elem).innerHTML = document.getElementById('hiddenDiv').innerHTML;   
+            //let ele:any = document.getElementById(elem);  
+           // ele.innerHTML = content;  
+                                 
         }
     }
-    
+
     /* Quick fixes for smoooth sailing */
     /**
  * Object.prototype.forEach() polyfill
