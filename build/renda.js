@@ -562,16 +562,13 @@ class Renda {
         this.updateElement = function (content, elem) {
             $('#' + elem).html(content);
         };
-        this.fileToBase64 = function (file) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                var result = reader.result;
-                return result;
-            };
-            reader.onerror = function (error) {
-                return false;
-            };
+        this.fileToBase64 = function (file, onLoadCallback) {
+            return new Promise(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function () { resolve(reader.result); };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         };
         let httpRequest;
     }
