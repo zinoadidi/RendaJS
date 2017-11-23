@@ -546,6 +546,18 @@
         public updateElement = function(content:any,elem:string){      
             $('#'+elem).html(content);                      
         }
+
+        public fileToBase64 = function (file) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+              var result = reader.result;
+              return result;
+            };
+            reader.onerror = function (error) {
+              return false;
+            };
+         }
     }
 
     /* Quick fixes for smoooth sailing */
