@@ -365,6 +365,7 @@
         httpReq.onreadystatechange = function () {
             httpReq.onerror = function(){
                 console.log('request failed:',this.response);
+                renda.loader('stop')
                 return false;
             }
             if (httpReq.readyState == 4){
@@ -420,6 +421,7 @@
             httpReq.onreadystatechange = function () {
                 httpReq.onerror = function(){
                     console.log('request failed:',this.response);
+                    renda.loader('stop')                
                     return false;
                 }
                 if (httpReq.readyState == 4){
