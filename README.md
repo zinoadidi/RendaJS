@@ -110,8 +110,8 @@ Since this is an hello world application, paste the following html snippet into 
 
 5. Make sure your app is hosted on a local server, any server side server that supports javascript apps is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
 
-## User Guild
-Renda.JS userguild / documentation can be found in the wiki section of the repository https://github.com/zinoadidi/RendaJS/wiki.
+## Documentation
+Renda.JS userguild / documentation can be found in the wiki section of it's repository https://github.com/zinoadidi/RendaJS/wiki.
 
 For comments, complaints and suggestions, please contact the developer via email: zinoadidi@gmail.com
 
