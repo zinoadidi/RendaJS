@@ -7,15 +7,15 @@ These instructions will help you get your copy of Renda up and running on your l
 
 ## Renda.JS - Introduction
 Renda.js is a frontend web development framework written with TypeScript. 
-With RendaJS, developing web apps is an easier, faster and efficient task as it does not restrict the developer to certain tools; neither does it enforce a specific mode of development on your project. RendaJS follows the MVC parttern of structuring code which is a tested and trusted industry standard way of modelling projects and we employ developers using this library to follow this, as you can be assured of best practices when using MVC and Renda.
+With Renda, developing web apps is easier, faster and efficient because Renda makes the process flexible and hassle free. RendaJS follows the MVC parttern of structuring applications which is a tested and trusted industrial standard way of modelling 21st century applications.
 
-RendaJS can be used in conjuction with any other javascript framework: this means that you can decide to outsource routing, DOM manipulation, data binding and modelling and still have RendaJS on the side for those functions you prefer RendaJS for.
+RendaJS can be used in conjuction with any other javascript framework: this means that you can decide to outsource some aspect of your project and still have Renda on the side for those functions you prefer Renda for.
 
 ## Using RendaJS
 RendaJS can be implemented in two ways:
 
 ### *Node.JS / NPM Enabled Servers (commonJS, Typescript,etc)*
-renda.ts.js (Module Enabled) typescript implementation can be imported into any Typescript, NPM managed or commonJS enabled project. This means that the host server must allows import and exports of modules. *Example of such servers include NodeJS and Ngnix.*
+renda.ts (Module Enabled) typescript implementation can be imported into any Typescript, NPM managed or commonJS enabled project. This means that the host server must allows import and exports of modules. *Example of such servers include NodeJS and Ngnix.*
 
 ### *Non Node.JS / NPM Servers - (Plain Javascript via <script>tag</script>).*
 renda.js (Non Module Class Based) implementation can be imported into any html project using the script tag.
@@ -63,7 +63,7 @@ Set up your project with RendaJS (Plain JS Implementation):
             "authToken": authToken
         },
         loader:{
-            active:true,
+            active:false,
             useCustom:true,
             id:'loadingbar', 
             imgUrl: '',
@@ -108,7 +108,7 @@ Since this is an hello world application, paste the following html snippet into 
   </center>
 ```
 
-5. Make sure your app is hosted on a local server, any server side server that supports javascript apps is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
+5. Make sure your app is hosted on a local server, any server that supports javascript application is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
 
 ## Documentation
 Renda.JS userguild / documentation can be found in the wiki section of it's repository https://github.com/zinoadidi/RendaJS/wiki.
