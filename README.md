@@ -102,11 +102,11 @@ Set up your project with RendaJS (Plain JS Implementation):
 
 Since this is an hello world application, paste the following html snippet into the home.html file and save it.
 
-...
-    <center>
-      <h6>Welcome to Renda</h6>
-    </center>
-...
+```
+  <center>
+    <h6>Welcome to Renda</h6>
+  </center>
+```
 
 5. Make sure your app is hosted on a local server, any server side server that supports javascript apps is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
 
@@ -114,3 +114,5 @@ Since this is an hello world application, paste the following html snippet into 
 Renda.JS userguild / documentation can be found in the wiki section of the repository https://github.com/zinoadidi/RendaJS/wiki.
 
 For comments, complaints and suggestions, please contact the developer via email: zinoadidi@gmail.com
+
+
