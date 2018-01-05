@@ -1,17 +1,17 @@
-# Renda
+# RendaJS
 Lightweight Single Page Web & Mobile Application Develelopment Framework.
 
 ## Getting Started
 
 These instructions will help you get your copy of Renda up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-## Renda.JS - Introduction
+## Introduction
 Renda.js is a frontend web development framework written with TypeScript. 
 With Renda, developing web apps is easier, faster and efficient because Renda makes the process flexible and hassle free. RendaJS follows the MVC parttern of structuring applications which is a tested and trusted industrial standard way of modelling 21st century applications.
 
 RendaJS can be used in conjuction with any other javascript framework: this means that you can decide to outsource some aspect of your project and still have Renda on the side for those functions you prefer Renda for.
 
-## Using RendaJS
+## Using Renda
 RendaJS can be implemented in two ways:
 
 ### *Node.JS / NPM Enabled Servers (commonJS, Typescript,etc)*
@@ -111,8 +111,8 @@ Since this is an hello world application, paste the following html snippet into 
 5. Make sure your app is hosted on a local server, any server that supports javascript application is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
 
 ## Documentation
-Renda.JS userguild / documentation can be found in the wiki section of it's repository https://github.com/zinoadidi/RendaJS/wiki.
+Renda.JS userguild / documentation can be found in the wiki section of this repository https://github.com/zinoadidi/RendaJS/wiki.
 
-For comments, complaints and suggestions, please contact the developer via email: zinoadidi@gmail.com
+For comments and suggestions, please contact the developer via email: zinoadidi@gmail.com
 
 
