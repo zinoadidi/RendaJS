@@ -82,14 +82,36 @@ Set up your project with RendaJS (Plain JS Implementation):
 	```
 	<script type="text/javascript" scr='path-to/jquery-lib'></script>
 	<script type="text/javascript" scr='path-to/other-libs'></script>
-	<script type="text/javascript" scr='path-to/Renda.JS'></script>
-	<script type="text/javascript" scr='path-to/models.JS'></script>
-	<script type="text/javascript" scr='path-to/other-app-js-files.JS'></script>
+	<script type="text/javascript" scr='path-to/Renda.js'></script>
+	<script type="text/javascript" scr='path-to/models.js'></script>
+	<script type="text/javascript" scr='path-to/other-app-js-files.js'></script>
 	<!-- YOu should consider including config.js before your main app.js script -->
 	<script type="text/javascript" scr='path-to/config.js'></script>
 	<script type="text/javascript" scr='path-to/app.js'></script>
 	```
+4. Navigate to your app, view sub folder and create a 'home.html' file in the page subfolder as shown below.
 
+ - my_project
+   - app
+     - view
+       - page
+         - home.html
+       - component
+     - scripts
+   - config.js
+
+Since this is an hello world application, paste the following html snippet into the home.html file and save it.
+
+...
+  <div>
+    <h1>Welcome to Renda</h1>
+  </div>
+...
+
+5. Make sure your app is hosted on a local server, any server side server that supports javascript apps is sufficient. Navigate to the address of your app and you should see welcome to renda displayed on the screen.
+
+## User Guild
+Renda.JS userguild / documentation can be found in the wiki section of the repository https://github.com/zinoadidi/RendaJS/wiki
 ## Renda.JS Pages
 If you are using the sample project, you will notice the view folder in the app folder already, inside that folder we have 2 sub folders named 'pages and components':
 
