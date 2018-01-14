@@ -14,7 +14,6 @@ class Renda {
         this.Config = {
             appTitle: "",
             displayContainer: "",
-            componentDisplayElem: '',
             defaultPage: "",
             loadDefaultPage: false,
             trackUrlChanges: false,
@@ -55,7 +54,6 @@ class Renda {
             // Allocate user settings to  app settings
             this.Config.appTitle = obj == null ? 'Renda | Start Page' : obj[0]['appTitle'];
             this.Config.displayContainer = obj == null ? 'display' : obj[0]['displayContainer'];
-            this.Config.componentDisplayElem = obj == null ? obj[0]['displayContainer'] : obj[0]['componentDisplayElem'];
             this.Config.loadDefaultPage = obj == null ? false : obj[0]['loadDefaultPage'];
             this.Config.trackUrlChanges = obj == null ? false : obj[0]['trackUrlChanges'];
             this.Config.registerPageHistory = obj == null ? true : obj[0]['registerPageHistory'];
@@ -98,7 +96,7 @@ class Renda {
                 displayElem = obj[1];
             }
             else { } //do nothing
-            //Send ajax request for page 
+            //Send ajax request for page
             let httpReq = this.httpRequest;
             httpReq = new XMLHttpRequest();
             httpReq.open('GET', path, true);
@@ -144,9 +142,6 @@ class Renda {
             let displayElem = obj[2];
             let elem = document.getElementById(displayElem);
             let httpReq = this.httpRequest;
-            if (displayElem == '' || displayElem == null) {
-                displayElem = this.Config.componentDisplayElem;
-            }
             //Send ajax request for page
             httpReq = new XMLHttpRequest();
             httpReq.open('GET', path, true);
@@ -320,7 +315,6 @@ class Renda {
             let method = obj[2];
             let header;
             let serverUrl;
-            let callbackData;
             if (method) { }
             else {
                 this.log(this.Config.errorMsg.postErrorParam + 'please pass all options for post');
@@ -337,12 +331,6 @@ class Renda {
             }
             else {
                 serverUrl = this.Config.serverUrl;
-            }
-            if (obj[5] && obj[5] != null) {
-                callbackData = obj[5];
-            }
-            else {
-                callbackData = null;
             }
             url = serverUrl + url;
             //send request
@@ -379,7 +367,7 @@ class Renda {
                             if (response != '' && response != 'null'
                                 && response != ' ' && response != 'undefined'
                                 && response.length > 1) {
-                                window[method](this.response, callbackData);
+                                window[method](this.response);
                                 return false;
                             }
                             else {
@@ -533,14 +521,13 @@ class Renda {
                             this.page(this.Config.defaultPage);
                         }
                         else {
+                            this.page(cPage[1]);
                             if (cPage[2]) {
                                 if (cPage[2] == '' || cPage[2] == null || cPage[1] == '/') {
                                     this.log('not a components');
                                 }
                                 else {
                                     this.log('component', cPage[2]);
-                                    this.page(cPage[1]);
-                                    //this.component(cPage[1],cPage[2]);
                                 }
                             }
                         }

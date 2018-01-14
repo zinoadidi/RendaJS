@@ -330,6 +330,7 @@
         let method:string = obj[2]
         let header:any;
         let serverUrl:string;
+        let callbackData:any;
         if (method){}else{
             this.log(this.Config.errorMsg.postErrorParam  +'please pass all options for post'); 
             return false;
@@ -344,7 +345,11 @@
         }else{
             serverUrl = this.Config.serverUrl;
         }
-        
+        if (obj[5] && obj[5]!=null){
+            callbackData = obj[5];
+        }else{
+            callbackData = null;
+        }
         url = serverUrl+url;
         //send request
         let httpReq = this.httpRequest; 
@@ -379,7 +384,7 @@
                         if(response !=''&&response != 'null' 
                         && response !=' ' && response != 'undefined'
                         && response.length >1){         
-                            window[method](this.response); 
+                            window[method](this.response,callbackData); 
                             return false;                                   
                         }else{
                             console.log('preflight:',this.response)
