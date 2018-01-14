@@ -78,17 +78,33 @@ Set up your project with RendaJS (Plain JS Implementation):
     renda.config(appSettings);
 	```
 	- Note that, renda.js will not start until you call the renda.config(appSettings) function.
-	- Before runing your app, make sure your index.html file includes all app files in the following order:
-	```
-	<script type="text/javascript" scr='path-to/jquery-lib'></script>
-	<script type="text/javascript" scr='path-to/other-libs'></script>
-	<script type="text/javascript" scr='path-to/Renda.js'></script>
-	<script type="text/javascript" scr='path-to/models.js'></script>
-	<script type="text/javascript" scr='path-to/other-app-js-files.js'></script>
-	<!-- YOu should consider including config.js before your main app.js script -->
-	<script type="text/javascript" scr='path-to/config.js'></script>
-	<script type="text/javascript" scr='path-to/app.js'></script>
-	```
+  
+	Before running your app, make sure your index.html file includes all app files in the following order and also your display element as specified in `renda.Config.displayContainer`:
+  ```
+    <!DOCTYPE html>
+    <html>
+    <head>    
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Page Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" scr='path-to/jquery-lib'></script>
+        <script type="text/javascript" scr='path-to/other-libs'></script>
+        <script type="text/javascript" scr='path-to/Renda.JS'></script>
+        <script type="text/javascript" scr='path-to/models.JS'></script>
+        <script type="text/javascript" scr='path-to/other-app-js-files.JS'></script>
+        <!-- You should consider including config.js before your app.js script -->
+        <script type="text/javascript" scr='path-to/config.js'></script>
+        <script type="text/javascript" scr='path-to/app.js'></script>
+    </head>
+    <body>
+        <div id="display">
+        <!-- Your pages will appear here -->
+        </div>
+    </body>
+    </html>
+  ```
+
 4. Navigate to your app, view sub folder and create a 'home.html' file in the page subfolder as shown below.
 
  - my_project
