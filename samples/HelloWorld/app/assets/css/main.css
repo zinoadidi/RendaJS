@@ -5,3 +5,13 @@
     position: absolute;
     text-align: center
 }
+
+h3{
+    color:silver;
+}
+h1{
+    color:darkgray
+}
+img{
+    -webkit-filter: grayscale(100%);
+}
