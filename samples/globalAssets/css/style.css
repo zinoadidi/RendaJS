@@ -101,4 +101,19 @@ body{
 header{
     background: black;
     color: #ffd700;
+    position: sticky;
+    top:0;
+    border-bottom: 1px solid white!important;
+}
+
+#slider{
+   margin-top:2px;
+}
+.cursive{
+    font-family: cursive!important;
+}
+.footer{
+    background: black;
+    color: #ffd700;
+    padding: 10px    
 }
