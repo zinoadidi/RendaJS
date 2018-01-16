@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RendaJS | One Step Forward</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="globalAssets/css/style.css">
+    <link rel="stylesheet" href="globalAssets/css/w3.css">
+        
+
+</head>
+<body>
+    <div id="loadingbar" style="z-index: 1000; position: fixed;" class="w3-top">
+        <div id="preindexLoader">
+            <img src='globalAssets/img/logo.png' width="150" id="loadingImg" class="w3-animate-fading">
+            <div id="indexLoader"></div>
+        </div>
+    </div>
+    <div id="main" class="main" style="display:none">
+        <header class="w3-card">
+            <span class="w3-padding engagement">
+                <label class="w3-xxlarge">RendaJS |</label>
+                <label class="w3-xlarge"> One Step Forward</label>
+            </span>
+        </header>
+        <div class="w3-container w3-margin-top">
+            <div class="w3-half">
+                <div class="w3-padding" style="">
+                    <center>                    
+                        <h4 class="engagement">What is RendaJS</h4>
+                        Renda is a lightweight single page web & mobile application development framework. With Renda, developing web apps is an
+                        easier, faster and efficient task as we do not restrict developers to specific tools and methods. Renda follows the MVC pattern
+                        of structuring code which is a tested and trusted industry standard way of modeling projects. We employ developers using
+                        this library to follow this, as you can be assured of best practices when using MVC in your Renda project. RendaJS can be
+                        used in conjunction with any other javascript framework. You can decide to outsource some part of your project and still
+                        have RendaJS on the side for those functions you prefer RendaJS for.
+                    </center>
+                </div>
+            </div>
+            <div class="w3-half">
+                <p class="w3-padding ">
+                    <center>
+                    <h3 class="engagement">Downloads</h3>   
+                    </center>
+                    <span>
+                        <ul class="w3-ul w3-striped">
+                            <li>Renda is open source and is available for free on github <a href="https://github.com/zinoadidi/RendaJS">Click to visit repository</a></li>
+                        </ul>
+                    </span>
+                </p>
+            </div>
+        </div>
+        
+    </div>
+    <div id="WelcomeDiv" class="main" style="display:none">
+        
+    </div>
+</body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css?family=Engagement|Roboto+Slab" rel="stylesheet">
+<script src="globalAssets/js/jquery.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#loadingbar').hide();
+        $('.main').fadeIn('slow');
+    });
+</script>
+</html>
