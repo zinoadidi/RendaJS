@@ -113,7 +113,11 @@ header{
     font-family: cursive!important;
 }
 .footer{
+    width: -webkit-fill-available;
     background: black;
     color: #ffd700;
-    padding: 10px    
+    padding: 10px;
+    position: absolute;
+    margin-right: auto;
+    margin-left: auto;
 }
