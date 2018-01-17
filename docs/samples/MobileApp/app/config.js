@@ -1,6 +1,6 @@
 /*App settings*/
 var appSettings = {
-    appTitle: 'Static Website - RendaJS',
+    appTitle: 'Dynamic Website - RendaJS',
     displayContainer: 'display',
     defaultPage: 'home',
     errorPage: 'error',
