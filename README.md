@@ -129,6 +129,8 @@ Since this is an hello world application, paste the following html snippet into 
 ## Documentation
 Renda.JS userguild / documentation can be found in the wiki section of this repository https://github.com/zinoadidi/RendaJS/wiki.
 
+You can also visit https://zinoadidi.github.io/RendaJS/index.html For more details.
+
 For comments and suggestions, please contact the developer via email: zinoadidi@gmail.com
 
 
