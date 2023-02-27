@@ -12,7 +12,7 @@
   "devDependencies": {
     "@types/jquery": "^3.3.1",
     "concurrently": "^3.5.1",
-    "lite-server": "^2.3.0",
+    "lite-server": "^2.6.1",
     "typescript": "^2.8.1"
   },
   "dependencies": {
